@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h1>Admin Dashboard</h1>
+<p class="muted">Platform overview and quick actions.</p>
+
+<div class="stats-grid">
+    <div class="stat-card"><span class="stat-num">{{ stats.total_users }}</span><span>Total Users</span></div>
+    <div class="stat-card"><span class="stat-num">{{ stats.total_alumni }}</span><span>Alumni</span></div>
+    <div class="stat-card"><span class="stat-num">{{ stats.total_students }}</span><span>Students</span></div>
+    <div class="stat-card highlight"><span class="stat-num">{{ stats.pending_verifications }}</span><span>Pending Verifications</span></div>
+    <div class="stat-card"><span class="stat-num">{{ stats.total_events }}</span><span>Events</span></div>
+    <div class="stat-card"><span class="stat-num">{{ stats.total_jobs }}</span><span>Job Posts</span></div>
+    <div class="stat-card"><span class="stat-num">{{ stats.total_discussions }}</span><span>Discussions</span></div>
+</div>
+
+<div class="quick-links">
+    <a href="{{ url_for('admin.users') }}" class="btn btn-outline">Manage Users</a>
+    <a href="{{ url_for('admin.announcements') }}" class="btn btn-outline">Post Announcement</a>
+    <a href="{{ url_for('admin.manage_events') }}" class="btn btn-outline">Manage Events</a>
+</div>
+
+<h2>Recently Registered</h2>
+<table class="data-table">
+    <thead>
+        <tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Joined</th></tr>
+    </thead>
+    <tbody>
+        {% for u in recent_users %}
+        <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.email }}</td>
+            <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
+            <td>{{ "✅" if u.is_verified else "⏳" }}</td>
+            <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No users yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
