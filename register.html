@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Register - Alumni Network{% endblock %}
+
+{% block content %}
+<div class="auth-card auth-card-wide">
+    <h2>Create Your Account</h2>
+    <p class="muted">Join as a student or alumni to start connecting.</p>
+    <form method="POST" action="{{ url_for('auth.register') }}">
+        <label for="role">I am a</label>
+        <select id="role" name="role" onchange="toggleRoleFields()">
+            <option value="student">Student</option>
+            <option value="alumni">Alumni</option>
+        </select>
+
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <div class="form-row">
+            <div>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6">
+            </div>
+            <div>
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="department">Department</label>
+                <input type="text" id="department" name="department" placeholder="e.g. Computer Science">
+            </div>
+            <div id="student-year-field">
+                <label for="current_year">Current Year</label>
+                <input type="text" id="current_year" name="current_year" placeholder="e.g. 3rd Year">
+            </div>
+        </div>
+
+        <div id="student-fields">
+            <label for="roll_number">Roll Number</label>
+            <input type="text" id="roll_number" name="roll_number">
+        </div>
+
+        <div id="alumni-fields" style="display:none;">
+            <div class="form-row">
+                <div>
+                    <label for="graduation_year">Graduation Year</label>
+                    <input type="number" id="graduation_year" name="graduation_year" min="1950" max="2100">
+                </div>
+                <div>
+                    <label for="degree">Degree</label>
+                    <input type="text" id="degree" name="degree" placeholder="e.g. B.Tech">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="current_company">Current Company</label>
+                    <input type="text" id="current_company" name="current_company">
+                </div>
+                <div>
+                    <label for="designation">Designation</label>
+                    <input type="text" id="designation" name="designation">
+                </div>
+            </div>
+            <p class="muted small">Note: Alumni accounts require verification by an administrator before you can log in.</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+    </form>
+    <p class="auth-footer">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleRoleFields() {
+        const role = document.getElementById('role').value;
+        const studentFields = document.getElementById('student-fields');
+        const alumniFields = document.getElementById('alumni-fields');
+        const studentYearField = document.getElementById('student-year-field');
+        if (role === 'alumni') {
+            studentFields.style.display = 'none';
+            studentYearField.style.display = 'none';
+            alumniFields.style.display = 'block';
+        } else {
+            studentFields.style.display = 'block';
+            studentYearField.style.display = 'block';
+            alumniFields.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
