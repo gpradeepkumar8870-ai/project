@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Jobs & Internships{% endblock %}
+
+{% block content %}
+<h1>Jobs &amp; Internships</h1>
+
+{% if current_user.is_alumni %}
+<a href="{{ url_for('alumni.post_job') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">+ Post an Opportunity</a>
+{% endif %}
+
+<form method="GET" action="{{ url_for('main.jobs') }}" class="search-form">
+    <input type="text" name="q" value="{{ search }}" placeholder="Search by title, company, keyword...">
+    <select name="type">
+        <option value="" {{ "selected" if not post_type }}>All Types</option>
+        <option value="job" {{ "selected" if post_type == "job" }}>Full-time Jobs</option>
+        <option value="internship" {{ "selected" if post_type == "internship" }}>Internships</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="card-list">
+{% for j in jobs %}
+    <div class="list-card">
+        <div class="list-card-header">
+            <h3>{{ j.title }} <span class="badge badge-{{ j.post_type }}">{{ j.post_type }}</span></h3>
+        </div>
+        <p><strong>{{ j.company }}</strong> &middot; {{ j.location or "Location not specified" }}</p>
+        <p>{{ j.description }}</p>
+        {% if j.deadline %}<p class="muted">Deadline: {{ j.deadline.strftime('%d %b %Y') }}</p>{% endif %}
+        {% if j.apply_link %}<p><a href="{{ j.apply_link }}" target="_blank" rel="noopener">External Application Link →</a></p>{% endif %}
+        <small class="muted">Posted by {{ j.poster.user.name }} on {{ j.created_at.strftime('%d %b %Y') }}</small>
+
+        {% if current_user.is_student %}
+            {% if j.id in applied_job_ids %}
+                <p class="badge badge-success" style="margin-top:0.5rem;">✅ Already Applied</p>
+            {% else %}
+                <button class="btn btn-small btn-primary" style="margin-top:0.75rem;" onclick="document.getElementById('apply-form-{{ j.id }}').classList.toggle('hidden')">Apply Now</button>
+                <form id="apply-form-{{ j.id }}" method="POST" action="{{ url_for('student.apply_job', job_id=j.id) }}" class="hidden mentor-request-form">
+                    <textarea name="cover_note" rows="2" placeholder="Optional cover note..."></textarea>
+                    <button type="submit" class="btn btn-small btn-primary">Submit Application</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+{% else %}
+    <p class="muted">No opportunities posted yet.</p>
+{% endfor %}
+</div>
+{% endblock %}
