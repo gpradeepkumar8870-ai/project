@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<h1>Messages</h1>
+
+<div class="card-list">
+{% for c in contacts %}
+    <div class="list-card">
+        <a href="{{ url_for('main.conversation', user_id=c.id) }}">
+            <h3>{{ c.name }} <span class="badge badge-{{ c.role }}">{{ c.role }}</span></h3>
+        </a>
+    </div>
+{% else %}
+    <p class="muted">No conversations yet.</p>
+    {% if current_user.is_student %}
+        <a href="{{ url_for('student.directory') }}" class="btn btn-primary">Find an Alumni to Connect With</a>
+    {% endif %}
+{% endfor %}
+</div>
+{% endblock %}
