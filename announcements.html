@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<h1>Announcements</h1>
+
+{% if current_user.is_admin %}
+<a href="{{ url_for('admin.announcements') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">Post New Announcement</a>
+{% endif %}
+
+<div class="card-list">
+{% for a in announcements %}
+    <div class="list-card">
+        <h3>{{ a.title }}</h3>
+        <p>{{ a.content }}</p>
+        <small class="muted">Posted {{ a.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+    </div>
+{% else %}
+    <p class="muted">No announcements yet.</p>
+{% endfor %}
+</div>
+{% endblock %}
