@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="list-card">
+    <div class="list-card-header">
+        <h1>{{ post.title }}</h1>
+        {% if post.posted_by == current_user.id or current_user.is_admin %}
+        <form method="POST" action="{{ url_for('main.delete_discussion', post_id=post.id) }}"
+              onsubmit="return confirm('Delete this discussion?');">
+            <button type="submit" class="btn btn-small btn-danger">Delete</button>
+        </form>
+        {% endif %}
+    </div>
+    <p>{{ post.content }}</p>
+    <small class="muted">By {{ post.author.name }} &middot; {{ post.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+</div>
+
+<h2>Comments ({{ post.comments|length }})</h2>
+
+<form method="POST" action="{{ url_for('main.discussion_detail', post_id=post.id) }}" class="card-form">
+    <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
+    <button type="submit" class="btn btn-primary">Post Comment</button>
+</form>
+
+<div class="card-list">
+{% for c in post.comments|sort(attribute='created_at') %}
+    <div class="list-card comment-card">
+        <p>{{ c.content }}</p>
+        <small class="muted">{{ c.author.name }} &middot; {{ c.created_at.strftime('%d %b %Y, %I:%M %p') }}</small>
+    </div>
+{% else %}
+    <p class="muted">No comments yet. Start the conversation!</p>
+{% endfor %}
+</div>
+{% endblock %}
