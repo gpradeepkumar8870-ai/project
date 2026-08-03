@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Discussions{% endblock %}
+
+{% block content %}
+<h1>Discussion Forum</h1>
+<a href="{{ url_for('main.new_discussion') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">+ Start a Discussion</a>
+
+<div class="card-list">
+{% for p in posts %}
+    <div class="list-card">
+        <h3><a href="{{ url_for('main.discussion_detail', post_id=p.id) }}">{{ p.title }}</a></h3>
+        <p>{{ p.content[:180] }}{% if p.content|length > 180 %}...{% endif %}</p>
+        <small class="muted">By {{ p.author.name }} &middot; {{ p.created_at.strftime('%d %b %Y') }} &middot; {{ p.comments|length }} comment(s)</small>
+    </div>
+{% else %}
+    <p class="muted">No discussions started yet. Be the first!</p>
+{% endfor %}
+</div>
+{% endblock %}
