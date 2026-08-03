@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Events{% endblock %}
+
+{% block content %}
+<h1>Events</h1>
+
+{% if current_user.is_admin %}
+<a href="{{ url_for('admin.manage_events') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">Manage Events</a>
+{% endif %}
+
+<div class="card-list">
+{% for e in events %}
+    <div class="list-card">
+        <div class="list-card-header">
+            <h3>{{ e.title }}</h3>
+            {% if e.event_date < now %}
+                <span class="badge">Past</span>
+            {% else %}
+                <span class="badge badge-success">Upcoming</span>
+            {% endif %}
+        </div>
+        <p>{{ e.description }}</p>
+        <p><strong>📍 {{ e.location or "TBA" }}</strong> &middot; {{ e.event_date.strftime('%d %b %Y, %I:%M %p') }}</p>
+        <p class="muted">{{ e.rsvps|length }} attendee(s)</p>
+        {% if e.event_date >= now %}
+        <form method="POST" action="{{ url_for('main.rsvp_event', event_id=e.id) }}" class="inline-form">
+            {% if e.id in my_rsvp_ids %}
+                <button type="submit" class="btn btn-small btn-outline">Cancel RSVP</button>
+            {% else %}
+                <button type="submit" class="btn btn-small btn-primary">RSVP</button>
+            {% endif %}
+        </form>
+        {% endif %}
+    </div>
+{% else %}
+    <p class="muted">No events scheduled yet.</p>
+{% endfor %}
+</div>
+{% endblock %}
