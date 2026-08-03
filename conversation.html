@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Chat with {{ other_user.name }}{% endblock %}
+
+{% block content %}
+<h1>Conversation with {{ other_user.name }}</h1>
+
+<div class="chat-thread">
+{% for m in thread %}
+    <div class="chat-bubble {{ 'chat-mine' if m.sender_id == current_user.id else 'chat-theirs' }}">
+        <p>{{ m.content }}</p>
+        <small>{{ m.created_at.strftime('%d %b, %I:%M %p') }}</small>
+    </div>
+{% else %}
+    <p class="muted">No messages yet. Say hello!</p>
+{% endfor %}
+</div>
+
+<form method="POST" action="{{ url_for('main.conversation', user_id=other_user.id) }}" class="card-form chat-form">
+    <textarea name="content" rows="2" placeholder="Type your message..." required></textarea>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+{% endblock %}
